@@ -1,0 +1,287 @@
+#include "Core8051.h"
+
+Core8051::Core8051()
+{
+    //ctor
+}
+
+Core8051::~Core8051()
+{
+    //dtor
+}
+
+
+std::pair<std::uint8_t, std::uint8_t> Core8051::BitAddressDecoder(std::uint8_t BitAddress)
+{
+    if(BitAddress < 0x80)
+    {
+        return std::pair<std::uint8_t, std::uint8_t>( 0x20 + (BitAddress /  8), (BitAddress % 8));
+    }
+    else
+    {
+        MemoryCell temp;
+        temp._unsigned = BitAddress;
+        std::uint8_t cell = (temp.nibbles.n1 * 0x10) + ( temp.nibbles.n0 < 8 ? 0 : 8);
+        std::uint8_t bit = (temp.nibbles.n0 < 8 ? temp.nibbles.n0 : temp.nibbles.n0 - 8);
+        return std::pair<std::uint8_t, std::uint8_t>(cell, bit);
+    }
+}
+std::function<void(Core8051* pt)> Core8051::InstructionDecode[] =
+{
+   { [](Core8051* pt){pt->PC._unsigned +=1;} }, //NOP
+   { [](Core8051* pt){pt->PC._unsigned +=1;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=1;} }, //LJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=1;} }, //RR A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC @R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC @R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JBC bt addr, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //LCALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //RRC A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC @R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC @R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DEC R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JB bit addr, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //RET
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //RL A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADD A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JNB bit addr, codeaddr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //RETI
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //RLC A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ADDC A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JC code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data addr,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data addr,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL data A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JNC code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL data addr,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL data addr,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JZ code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP codeaddr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL data addr,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL data addr,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XRL A.R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JNZ code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL C,bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //JMP @A+DPTR
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R0,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R1,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R0,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R1,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R2,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R3,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R4,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R5,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R6,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R7,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL C.bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVC A,@A+PC
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DIV AB
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV DPTR,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL codeaddr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV bit addr,C
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVC A,@A+DPTR
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,#data
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SUBB A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ORL C,bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV C,bit add
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //INC DPTR
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MUL AB
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, // reserved
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R0,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R1,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R0,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R1,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R2,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R3,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R4,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R5,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R6,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R7,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ANL C,bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CPL bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CPL C
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE A,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE A,data addr,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE @R0,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE @R1,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R0,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R1,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R2,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R3,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R4,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R5,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R6,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CJNE R6,#data,code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //PUSH data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CLR bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CLR C
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SWAP A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCH A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //POP data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SETB bit addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //SETB C
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DA A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data addr, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCHD A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //XCHD A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R0, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R1, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R2, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R3, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R4, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R5, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R6, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //DJNZ data R7, code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX A,@DPTR
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CLR A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,data addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,@R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,@R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R0
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R1
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R2
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R3
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R4
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R5
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R6
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV A,R7
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX @DPTR,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //ACALL code addr
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX @R0,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOVX @R1,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //CPL A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV data addr,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R0,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV @R1,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R0,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R1,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R2,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R3,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R4,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R5,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }, //MOV R6,A
+   { [](Core8051* pt){pt->PC._unsigned +=0;} }  //MOV R7,A
+};
