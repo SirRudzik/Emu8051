@@ -1,5 +1,7 @@
 #pragma once
 
+//Sfr addresses
+
 const std::uint8_t B = 0xF0;
 const std::uint8_t ACC = 0xE0;
 const std::uint8_t PSW = 0xD0;
@@ -21,3 +23,152 @@ const std::uint8_t DPH = 0x83;
 const std::uint8_t DPL = 0x82;
 const std::uint8_t SP = 0x81;
 const std::uint8_t P0 = 0x80;
+
+//Register address
+
+const std::uint8_t R0 = 0x0;
+const std::uint8_t R1 = 0x1;
+const std::uint8_t R2 = 0x2;
+const std::uint8_t R3 = 0x3;
+const std::uint8_t R4 = 0x4;
+const std::uint8_t R5 = 0x5;
+const std::uint8_t R6 = 0x6;
+const std::uint8_t R7 = 0x7;
+
+//Sfr bits addresses
+
+const std::uint8_t P0.0 = 0x80;
+const std::uint8_t P0.1 = 0x81;
+const std::uint8_t P0.2 = 0x82;
+const std::uint8_t P0.3 = 0x83;
+const std::uint8_t P0.4 = 0x84;
+const std::uint8_t P0.5 = 0x85;
+const std::uint8_t P0.6 = 0x86;
+const std::uint8_t P0.7 = 0x87;
+const std::uint8_t TCON.0 = 0x88;
+const std::uint8_t TCON.1 = 0x89;
+const std::uint8_t TCON.2 = 0x8A;
+const std::uint8_t TCON.3 = 0x8B;
+const std::uint8_t TCON.4 = 0x8C;
+const std::uint8_t TCON.5 = 0x8D;
+const std::uint8_t TCON.6 = 0x8E;
+const std::uint8_t TCON.7 = 0x8F;
+const std::uint8_t P1.0 = 0x90;
+const std::uint8_t P1.1 = 0x91;
+const std::uint8_t P1.2 = 0x92;
+const std::uint8_t P1.3 = 0x93;
+const std::uint8_t P1.4 = 0x94;
+const std::uint8_t P1.5 = 0x95;
+const std::uint8_t P1.6 = 0x96;
+const std::uint8_t P1.7 = 0x97;
+const std::uint8_t SCON.0 = 0x98;
+const std::uint8_t SCON.1 = 0x99;
+const std::uint8_t SCON.2 = 0x9A;
+const std::uint8_t SCON.3 = 0x9B;
+const std::uint8_t SCON.4 = 0x9C;
+const std::uint8_t SCON.5 = 0x9D;
+const std::uint8_t SCON.6 = 0x9E;
+const std::uint8_t SCON.7 = 0x9F;
+const std::uint8_t P2.0 = 0xA0;
+const std::uint8_t P2.1 = 0xA1;
+const std::uint8_t P2.2 = 0xA2;
+const std::uint8_t P2.3 = 0xA3;
+const std::uint8_t P2.4 = 0xA4;
+const std::uint8_t P2.5 = 0xA5;
+const std::uint8_t P2.6 = 0xA6;
+const std::uint8_t P2.7 = 0xA7;
+const std::uint8_t IE.0 = 0xA8;
+const std::uint8_t IE.1 = 0xA9;
+const std::uint8_t IE.2 = 0xAA;
+const std::uint8_t IE.3 = 0xAB;
+const std::uint8_t IE.4 = 0xAC;
+const std::uint8_t IE.5 = 0xAD;
+const std::uint8_t IE.6 = 0xAE;
+const std::uint8_t IE.7 = 0xAF;
+const std::uint8_t P3.0 = 0xB0;
+const std::uint8_t P3.1 = 0xB1;
+const std::uint8_t P3.2 = 0xB2;
+const std::uint8_t P3.3 = 0xB3;
+const std::uint8_t P3.4 = 0xB4;
+const std::uint8_t P3.5 = 0xB5;
+const std::uint8_t P3.6 = 0xB6;
+const std::uint8_t P3.7 = 0xB7;
+const std::uint8_t IP.0 = 0xB8;
+const std::uint8_t IP.1 = 0xB9;
+const std::uint8_t IP.2 = 0xBA;
+const std::uint8_t IP.3 = 0xBB;
+const std::uint8_t IP.4 = 0xBC;
+const std::uint8_t IP.5 = 0xBD;
+const std::uint8_t IP.6 = 0xBE;
+const std::uint8_t IP.7 = 0xBF;
+const std::uint8_t PSW.0 = 0xD0;
+const std::uint8_t PSW.1 = 0xD1;
+const std::uint8_t PSW.2 = 0xD2;
+const std::uint8_t PSW.3 = 0xD3;
+const std::uint8_t PSW.4 = 0xD4;
+const std::uint8_t PSW.5 = 0xD5;
+const std::uint8_t PSW.6 = 0xD6;
+const std::uint8_t PSW.7 = 0xD7;
+const std::uint8_t ACC.0 = 0xE0;
+const std::uint8_t ACC.1 = 0xE1;
+const std::uint8_t ACC.2 = 0xE2;
+const std::uint8_t ACC.3 = 0xE3;
+const std::uint8_t ACC.4 = 0xE4;
+const std::uint8_t ACC.5 = 0xE5;
+const std::uint8_t ACC.6 = 0xE6;
+const std::uint8_t ACC.7 = 0xE7;
+const std::uint8_t B.0 = 0xF0;
+const std::uint8_t B.1 = 0xF1;
+const std::uint8_t B.2 = 0xF2;
+const std::uint8_t B.3 = 0xF3;
+const std::uint8_t B.4 = 0xF4;
+const std::uint8_t B.5 = 0xF5;
+const std::uint8_t B.6 = 0xF6;
+const std::uint8_t B.7 = 0xF7;
+
+const std::uint8_t& C = PSW.7;
+const std::uint8_t& AC = PSW.6;
+const std::uint8_t& F0 = PSW.5;
+const std::uint8_t& RS1 = PSW.4;
+const std::uint8_t& RS0 = PSW.3;
+const std::uint8_t& OV = PSW.2;
+const std::uint8_t& P = PSW.0;
+const std::uint8_t& PS = IP.4;
+const std::uint8_t& PT1 = IP.3;
+const std::uint8_t& PX1 = IP.2;
+const std::uint8_t& PT0 = IP.1;
+const std::uint8_t& PX0 = IP.0;
+const std::uint8_t& _RD = P3.7;
+const std::uint8_t& _WR = P3.6;
+const std::uint8_t& T1 = P3.5;
+const std::uint8_t& T0 = P3.4;
+const std::uint8_t& _INT1 = P3.3;
+const std::uint8_t& _INT0 = P3.2;
+const std::uint8_t& TxD = P3.1;
+const std::uint8_t& RxD = P3.0;
+const std::uint8_t& EA = IE.7;
+const std::uint8_t& ES = IE.4;
+const std::uint8_t& ET1 = IE.3;
+const std::uint8_t& EX1 = IE.2;
+const std::uint8_t& ET0 = IE.1;
+const std::uint8_t& EX0 = IE.0;
+const std::uint8_t& SM0 = SCON.7;
+const std::uint8_t& SM1 = SCON.6;
+const std::uint8_t& SM2 = SCON.5;
+const std::uint8_t& REN = SCON.4;
+const std::uint8_t& TB8 = SCON.3;
+const std::uint8_t& RB8 = SCON.2;
+const std::uint8_t& TI = SCON.1;
+const std::uint8_t& RI = SCON.0;
+const std::uint8_t& TF1 = TCON.7;
+const std::uint8_t& TR1 = TCON.6;
+const std::uint8_t& TF0 = TCON.5;
+const std::uint8_t& TR0 = TCON.4;
+const std::uint8_t& IE1 = TCON.3;
+const std::uint8_t& IT1 = TCON.2;
+const std::uint8_t& IE0 = TCON.1;
+const std::uint8_t& IT0 = TCON.0;
+
+
+
+
