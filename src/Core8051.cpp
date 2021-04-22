@@ -21,8 +21,8 @@ std::pair<std::uint8_t, std::uint8_t> Core8051::BitAddressDecoder(std::uint8_t B
     {
         MemoryCell temp;
         temp._unsigned = BitAddress;
-        std::uint8_t cell = (temp.nibbles.n1 * 0x10) + ( temp.nibbles.n0 < 8 ? 0 : 8);
-        std::uint8_t bit = (temp.nibbles.n0 < 8 ? temp.nibbles.n0 : temp.nibbles.n0 - 8);
+        std::uint8_t cell = (temp.nibble.n1 * 0x10) + ( temp.nibble.n0 < 8 ? 0 : 8);
+        std::uint8_t bit = (temp.nibble.n0 < 8 ? temp.nibble.n0 : temp.nibble.n0 - 8);
         return std::pair<std::uint8_t, std::uint8_t>(cell, bit);
     }
 }

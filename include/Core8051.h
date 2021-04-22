@@ -5,13 +5,13 @@
 
 union MemoryCell
 {
-    std::uint8_t _unsigned;
-    std::int8_t _signed;
+    std::uint8_t byte;
+    std::int8_t signed_byte;
     struct
     {
         std::uint8_t n0 : 4;
         std::uint8_t n1 : 4;
-    } nibbles;
+    } nibble;
     struct
     {
         std::int8_t b0 : 1;
@@ -40,12 +40,12 @@ class Core8051
         MemoryCell externalRam[0x10000];
         union
         {
-        std::uint16_t _unsigned;
+        std::uint16_t word;
         struct
         {
             MemoryCell lowByte;
             MemoryCell highByte;
-        } bytes;
+        } byte;
         } PC;
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t BitAddress);
 };
