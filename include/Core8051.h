@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include "Sfr.h"
 
 union MemoryCell
 {
@@ -34,7 +35,7 @@ class Core8051
         LoadHex(std::string file);
 
     private:
-        static std::function<void(Core8051* pt)> InstructionDecode[0x100];
+        static std::function<void(Core8051* pt)> InstructionDecoder[0x100];
         MemoryCell code[0x10000];
         MemoryCell ram[0x100];
         MemoryCell externalRam[0x10000];
@@ -47,5 +48,7 @@ class Core8051
             MemoryCell highByte;
         } byte;
         } PC;
+
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t BitAddress);
+        std::uint8_t FindRegisterAddress(std::uint8_t r);
 };
