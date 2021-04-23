@@ -233,7 +233,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC.word +=0;} }, //AJMP code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //CLR bit addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //CLR C
-   { [](Core8051* pt){pt->PC.word +=0;} }, //SWAP A
+   { [](Core8051* pt){pt->PC.word++; MemoryCell temp; temp.n0 = pt->ram[ACC].n1; temp.n1 = pt->ram[ACC].n0; pt->ram[ACC].byte = tamp.byte;} }, //SWAP A
    { [](Core8051* pt){pt->PC.word +=0;} }, //XCH A,data addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //XCH A,@R0
    { [](Core8051* pt){pt->PC.word +=0;} }, //XCH A,@R1
@@ -265,8 +265,8 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC.word +=0;} }, //AJMP code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //MOVX A,@R0
    { [](Core8051* pt){pt->PC.word +=0;} }, //MOVX A,@R1
-   { [](Core8051* pt){pt->PC.word +=0;} }, //CLR A
-   { [](Core8051* pt){pt->PC.word +=0; pt->ram[ACC] = pt->ram[pt->code[pt->PC.word].byte]; pt->PC.word++;} }, //MOV A,data addr
+   { [](Core8051* pt){pt->PC.word++; pt->ram[ACC].byte = 0x0;} }, //CLR A
+   { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->code[pt->PC.word].byte]; pt->PC.word++;} }, //MOV A,data addr
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->ram[pt->FindRegisterAddress(0)].byte];} }, //MOV A,@R0
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->ram[pt->FindRegisterAddress(1)].byte];} }, //MOV A,@R1
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->FindRegisterAddress(0)];} }, //MOV A,R0
@@ -277,7 +277,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->FindRegisterAddress(5)];} }, //MOV A,R5
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->FindRegisterAddress(6)];} }, //MOV A,R6
    { [](Core8051* pt){pt->PC.word++; pt->ram[ACC] = pt->ram[pt->FindRegisterAddress(7)];} }, //MOV A,R7
-   { [](Core8051* pt){pt->PC.word +=0;} }, //MOVX @DPTR,A
+   { [](Core8051* pt){pt->PC.word++; Word temp; temp.lowByte = pt->ram[DPL]; temp.highByte = pt->ram[DPH]; pt->externalRam[temp.word].byte = pt->ram[ACC].byte;} }, //MOVX @DPTR,A
    { [](Core8051* pt){pt->PC.word +=0;} }, //ACALL code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //MOVX @R0,A
    { [](Core8051* pt){pt->PC.word +=0;} }, //MOVX @R1,A
