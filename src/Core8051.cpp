@@ -38,37 +38,37 @@ std::uint8_t Core8051::FindRegisterAddress(std::uint8_t r)
 std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
 {
    { [](Core8051* pt){pt->PC.word++;} }, //NOP
-   { [](Core8051* pt){pt->PC.word +=2;} }, //AJMP code addr
+   { [](Core8051* pt){pt->PC.word +=0;} }, //AJMP code addr
    { [](Core8051* pt){pt->PC.word++;} }, //LJMP code addr
    { [](Core8051* pt){pt->PC.word++;} }, //RR A
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC A
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC data addr
+   { [](Core8051* pt){pt->PC.word++; pt->ram[ACC].byte++;} }, //INC A
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->code[pt->PC.word].byte].byte++; pt->PC.word++;} }, //INC data addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //INC @R0
    { [](Core8051* pt){pt->PC.word +=0;} }, //INC @R1
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R0
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R1
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R2
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R3
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R4
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R5
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R6
-   { [](Core8051* pt){pt->PC.word +=0;} }, //INC R7
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(0)].byte++;} }, //INC R0
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(1)].byte++;} }, //INC R1
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->findRegisterAddress(2)].byte++;} }, //INC R2
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(3)].byte++;} }, //INC R3
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(4)].byte++;} }, //INC R4
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(5)].byte++;} }, //INC R5
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(6)].byte++;} }, //INC R6
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(7)].byte++;} }, //INC R7
    { [](Core8051* pt){pt->PC.word +=0;} }, //JBC bt addr, code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //ACALL code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //LCALL code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //RRC A
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC A
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC data addr
+   { [](Core8051* pt){pt->PC.word++; pt->ram[ACC].byte--;} }, //DEC A
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->code[pt->PC.word].byte].byte--; pt->PC.word++} }, //DEC data addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //DEC @R0
    { [](Core8051* pt){pt->PC.word +=0;} }, //DEC @R1
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R0
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R1
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R2
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R3
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R4
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R5
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R6
-   { [](Core8051* pt){pt->PC.word +=0;} }, //DEC R7
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(0)].byte--;} }, //DEC R0
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(1)].byte--;} }, //DEC R1
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(2)].byte--;} }, //DEC R2
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(3)].byte--;} }, //DEC R3
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->findRegisterAddress(4)].byte--;} }, //DEC R4
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->findRegisterAddress(5)].byte--;} }, //DEC R5
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(6)].byte--;} }, //DEC R6
+   { [](Core8051* pt){pt->PC.word++; pt->ram[pt->FindRegisterAddress(7)].byte--;} }, //DEC R7
    { [](Core8051* pt){pt->PC.word +=0;} }, //JB bit addr, code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //AJMP code addr
    { [](Core8051* pt){pt->PC.word +=0;} }, //RET
