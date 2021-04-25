@@ -4,10 +4,12 @@
 #include <functional>
 #include "Sfr.h"
 
-union Byte
+union Word_t;
+
+union Byte_t
 {
     std::uint8_t byte;
-    std::int8_t signed_byte;
+    std::int8_t signedByte;
 
     struct
     {
@@ -26,16 +28,41 @@ union Byte
         std::uint8_t b6 : 1;
         std::uint8_t b7 : 1;
     };
+    Byte_t& operator++();
+	Byte_t operator++(int);
+	Byte_t& operator--();
+	Byte_t operator--(int);
+	Byte_t& operator+=(const Byte_t& rhs);
+	Byte_t& operator-=(const Byte_t& rhs);
+	Byte_t& operator+(const Byte_t& rhs);
+	Byte_t& operator-(const Byte_t& rhs);
+    Byte_t& operator|=(const Byte_t& rhs);
+    Byte_t& operator&=(const Byte_t& rhs);
+    Byte_t& operator^=(const Byte_t& rhs);
+
+	operator int();
+	operator Word_t();
 };
 
-union Word
+union Word_t
 {
 	std::uint16_t word;
 	struct
 	{
-		Byte lowByte;
-		Byte highByte;
+		Byte_t lowByte;
+		Byte_t highByte;
 	};
+	Word_t& operator++();
+	Word_t operator++(int);
+	Word_t& operator--();
+	Word_t operator--(int);
+	Word_t& operator+=(const Word_t& rhs);
+	Word_t& operator-=(const Word_t& rhs);
+    Word_t& operator+(const Word_t& rhs);
+	Word_t& operator-(const Word_t& rhs);
+
+	operator int();
+	operator Byte_t();
 };
 
 class Core8051
@@ -46,35 +73,40 @@ class Core8051
         LoadHex(std::string file);
 
     private:
-        std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t BitAddress);
-        Byte& Register(std::uint8_t r);
+        std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t bitAddress);
+        bool GetBitState(std::uint8_t bitAddress);
+        void SetBit(std::uint8_t bitAddress);
+        void ClearBit(std::uint8_t bitAddress);
+        void InverseBit(std::uint8_t bitAddress);
+        Byte_t& Register(std::uint8_t r);
 
         static std::function<void(Core8051* pt)> InstructionDecoder[0x100];
-        Byte code[0x10000];
-        Byte ram[0x100];
-        Byte externalRam[0x10000];
-        Word PC;
+        Byte_t code[0x10000];
+        Byte_t ram[0x100];
+        Byte_t externalRam[0x10000];
+        Word_t PC;
 
         //sfr's
-        Byte& B;
-        Byte& ACC;
-        Byte& PSW;
-        Byte& IP;
-        Byte& P3;
-        Byte& IE;
-        Byte& P2;
-        Byte& SBUF;
-        Byte& SCON;
-        Byte& P1;
-        Byte& TH1;
-        Byte& TH0;
-        Byte& TL1;
-        Byte& TL0;
-        Byte& TMOD;
-        Byte& TCON;
-        Byte& PCON;
-        Byte& DPH;
-        Byte& DPL;
-        Byte& SP;
-        Byte& P0;
+        Byte_t& B;
+        Byte_t& ACC;
+        Byte_t& PSW;
+        Byte_t& IP;
+        Byte_t& P3;
+        Byte_t& IE;
+        Byte_t& P2;
+        Byte_t& SBUF;
+        Byte_t& SCON;
+        Byte_t& P1;
+        Byte_t& TH1;
+        Byte_t& TH0;
+        Byte_t& TL1;
+        Byte_t& TL0;
+        Byte_t& TMOD;
+        Byte_t& TCON;
+        Byte_t& PCON;
+        Byte_t& DPH;
+        Byte_t& DPL;
+        Byte_t& SP;
+        Byte_t& P0;
+        Word_t& DPTR;
 };
