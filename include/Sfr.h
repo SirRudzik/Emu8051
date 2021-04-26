@@ -115,4 +115,7 @@ const std::uint8_t B_5 = 0xF5;
 const std::uint8_t B_6 = 0xF6;
 const std::uint8_t B_7 = 0xF7;
 
-
+const std::uint8_t& CY = PSW.7;
+const std::uint8_t& AC = PSW.6;
+const std::uint8_t& OV = PSW.2;
+const std::uint8_t& P =PSW.0;
