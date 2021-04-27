@@ -74,7 +74,7 @@ class Core8051
 
     private:
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t bitAddress);
-        bool GetBitState(std::uint8_t bitAddress);
+        bool GetBit(std::uint8_t bitAddress);
         void SetBit(std::uint8_t bitAddress);
         void ClearBit(std::uint8_t bitAddress);
         void InverseBit(std::uint8_t bitAddress);
