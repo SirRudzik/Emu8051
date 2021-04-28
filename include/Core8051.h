@@ -36,9 +36,9 @@ union Byte_t
 	Byte_t& operator-=(const Byte_t& rhs);
 	Byte_t operator+(const Byte_t& rhs);
 	Byte_t operator-(const Byte_t& rhs);
-    	Byte_t& operator|=(const Byte_t& rhs);
-    	Byte_t& operator&=(const Byte_t& rhs);
-    	Byte_t& operator^=(const Byte_t& rhs);
+    Byte_t& operator|=(const Byte_t& rhs);
+    Byte_t& operator&=(const Byte_t& rhs);
+    Byte_t& operator^=(const Byte_t& rhs);
 
 	operator int();
 	operator Word_t();
@@ -58,7 +58,7 @@ union Word_t
 	Word_t operator--(int);
 	Word_t& operator+=(const Word_t& rhs);
 	Word_t& operator-=(const Word_t& rhs);
-    	Word_t operator+(const Word_t& rhs);
+    Word_t operator+(const Word_t& rhs);
 	Word_t operator-(const Word_t& rhs);
 
 	operator int();
@@ -70,9 +70,9 @@ class Core8051
     public:
         Core8051();
         virtual ~Core8051();
-        LoadHex(std::string file);
-	ProgramRun(std::uint64_t cycles; bool step);
-	Cycle();
+        void LoadHex(std::string file);
+        void ProgramRun(std::uint64_t cycles, bool step){}
+        void Cycle(){}
 
     private:
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t bitAddress);

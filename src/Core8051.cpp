@@ -160,7 +160,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC++;} }, //JBC bt addr, code addr
    { [](Core8051* pt){pt->PC++;} }, //ACALL code addr
    { [](Core8051* pt){pt->PC++;} }, //LCALL code addr
-   { [](Core8051* pt){pt->PC++; bool temp = pt->PSW.n7; st->PSW.n7 = pt->ACC.n0; pt->ACC >>= 1; pt->ACC.n7 = temp;} }, //RRC A
+   { [](Core8051* pt){pt->PC++; bool temp = pt->PSW.b7; pt->PSW.b7 = pt->ACC.b0; pt->ACC.byte >>= 1; pt->ACC.b7 = temp;} }, //RRC A
    { [](Core8051* pt){pt->PC++; pt->ACC--;} }, //DEC A
    { [](Core8051* pt){pt->PC++; pt->ram[pt->code[pt->PC]]--; pt->PC++;} }, //DEC data addr
    { [](Core8051* pt){pt->PC++; pt->ram[pt->Register(0)]--;} }, //DEC @R0
@@ -192,19 +192,19 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC++;} }, //JNB bit addr, codeaddr
    { [](Core8051* pt){pt->PC++;} }, //ACALL code addr
    { [](Core8051* pt){pt->PC++;} }, //RETI
-   { [](Core8051* pt){pt->PC++; bool temp = pt->PSW.n7; pt->PSW.n7 = pt->ACC.n7; pt->ACC <<= 1; pt->ACC.n0 = temp;} }, //RLC A
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,#data
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,data addr
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,@R0
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,@R1
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R0
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R1
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R2
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R3
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R4
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R5
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R6
-   { [](Core8051* pt){pt->PC++;} }, //ADDC A,R7
+   { [](Core8051* pt){pt->PC++; bool temp = pt->PSW.b7; pt->PSW.b7 = pt->ACC.b7; pt->ACC.byte <<= 1; pt->ACC.b0 = temp;} }, //RLC A
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->code[pt->PC] += Byte_t{pt->PSW.b7}; pt->PC++;} }, //ADDC A,#data
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->ram[pt->code[pt->PC]] += Byte_t{pt->PSW.b7}; pt->PC++;} }, //ADDC A,data addr
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->ram[pt->Register(0)] += Byte_t{pt->PSW.b7};} }, //ADDC A,@R0
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->ram[pt->Register(1)] += Byte_t{pt->PSW.b7};} }, //ADDC A,@R1
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(0) += Byte_t{pt->PSW.b7};} }, //ADDC A,R0
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(1) += Byte_t{pt->PSW.b7};} }, //ADDC A,R1
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(2) += Byte_t{pt->PSW.b7};} }, //ADDC A,R2
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(3) += Byte_t{pt->PSW.b7};} }, //ADDC A,R3
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(4) += Byte_t{pt->PSW.b7};} }, //ADDC A,R4
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(5) += Byte_t{pt->PSW.b7};} }, //ADDC A,R5
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(6) += Byte_t{pt->PSW.b7};} }, //ADDC A,R6
+   { [](Core8051* pt){pt->PC++; pt->ACC += pt->Register(7) += Byte_t{pt->PSW.b7};} }, //ADDC A,R7
    { [](Core8051* pt){pt->PC++;} }, //JC code addr
    { [](Core8051* pt){pt->PC++; Word_t temp; temp.lowByte = pt->code[pt->PC - Byte_t{1}]; temp.word <<= 3; temp.lowByte = pt->code[pt->PC]; pt->PC++; pt->PC = temp;} }, //AJMP code addr
    { [](Core8051* pt){pt->PC++; pt->ram[pt->code[pt->PC]] &= pt->ACC; pt->PC++;} }, //ORL data addr,A
@@ -237,7 +237,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC++; pt->ACC |= pt->Register(5);} }, //ANL A,R5
    { [](Core8051* pt){pt->PC++; pt->ACC |= pt->Register(6);} }, //ANL A,R6
    { [](Core8051* pt){pt->PC++; pt->ACC |= pt->Register(7);} }, //ANL A,R7
-   { [](Core8051* pt){pt->PC++; if(pt->ACC){pt->PC += pt->code[++(pt->PC)]} else{pt->PC++}} }, //JZ code addr
+   { [](Core8051* pt){pt->PC++; if(pt->ACC){pt->PC += pt->code[++(pt->PC)];} else{pt->PC++;};} }, //JZ code addr
    { [](Core8051* pt){pt->PC++; Word_t temp; temp.lowByte = pt->code[pt->PC - Byte_t{1}]; temp.word <<= 3; temp.lowByte = pt->code[pt->PC]; pt->PC++; pt->PC = temp;} }, //AJMP codeaddr
    { [](Core8051* pt){pt->PC++; pt->ram[pt->code[pt->PC]] ^= pt->ACC; pt->PC++;} }, //XRL data addr,A
    { [](Core8051* pt){pt->PC++; pt->ram[pt->code[pt->PC]] ^= pt->code[pt->PC + Byte_t{1}]; pt->PC + Word_t{2};} }, //XRL data addr,#data
@@ -253,7 +253,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC++; pt->ACC ^= pt->Register(5);} }, //XRL A.R5
    { [](Core8051* pt){pt->PC++; pt->ACC ^= pt->Register(6);} }, //XRL A.R6
    { [](Core8051* pt){pt->PC++; pt->ACC ^= pt->Register(7);} }, //XRL A.R7
-   { [](Core8051* pt){pt->PC++; if(!(pt->ACC)){pt->PC += pt->code[++(pt->PC)]} else{pt->PC++};} }, //JNZ code addr
+   { [](Core8051* pt){pt->PC++; if(!(pt->ACC)){pt->PC += pt->code[++(pt->PC)];} else{pt->PC++;};} }, //JNZ code addr
    { [](Core8051* pt){pt->PC++;} }, //ACALL code addr
    { [](Core8051* pt){pt->PC++; pt->WriteBit(PSW_7, (pt->GetBit(PSW_7) && pt->GetBit(pt->code[pt->PC]))); pt->PC++;} }, //ORL C, !bit addr
    { [](Core8051* pt){pt->PC++; pt->PC = pt->ACC + pt->DPTR;} }, //JMP @A+DPTR
@@ -356,7 +356,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
    { [](Core8051* pt){pt->PC++;} }, //DA A
    { [](Core8051* pt){pt->PC++;} }, //DJNZ data addr, code addr
    { [](Core8051* pt){pt->PC++; pt->ACC.n0 = pt->ram[pt->Register(0)].n0;} }, //XCHD A,@R0
-   { [](Core8051* pt){pt->PC++; pt->ACC.n0 = pr->ram[pt->Register(1)].n0;} }, //XCHD A,@R1
+   { [](Core8051* pt){pt->PC++; pt->ACC.n0 = pt->ram[pt->Register(1)].n0;} }, //XCHD A,@R1
    { [](Core8051* pt){pt->PC++;} }, //DJNZ R0, code addr
    { [](Core8051* pt){pt->PC++;} }, //DJNZ R1, code addr
    { [](Core8051* pt){pt->PC++;} }, //DJNZ R2, code addr
