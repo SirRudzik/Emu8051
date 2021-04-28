@@ -81,10 +81,10 @@ class Core8051
         void ClearBit(std::uint8_t bitAddress);
         void InverseBit(std::uint8_t bitAddress);
         void WriteBit(std::uint8_t bitAddress, bool bit);
-	void AccAdd(const Byte_t& num);
-	void AccAddC(const Byte_t& num);
-	void AccSubb(const Byte_t& num);
-	void CalcBitP();
+        void AccAdd(const Byte_t& num);
+        void AccAddC(const Byte_t& num);
+        void AccSubb(const Byte_t& num);
+        void CalcBitP();
         Byte_t& Register(std::uint8_t r);
 
         static std::function<void(Core8051* pt)> InstructionDecoder[0x100];
