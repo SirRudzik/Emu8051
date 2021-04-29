@@ -28,7 +28,7 @@ union Byte_t
         std::uint8_t b6 : 1;
         std::uint8_t b7 : 1;
     };
-    Byte_t& operator++();
+	Byte_t& operator++();
 	Byte_t operator++(int);
 	Byte_t& operator--();
 	Byte_t operator--(int);
@@ -36,9 +36,9 @@ union Byte_t
 	Byte_t& operator-=(const Byte_t& rhs);
 	Byte_t operator+(const Byte_t& rhs);
 	Byte_t operator-(const Byte_t& rhs);
-    Byte_t& operator|=(const Byte_t& rhs);
-    Byte_t& operator&=(const Byte_t& rhs);
-    Byte_t& operator^=(const Byte_t& rhs);
+	Byte_t& operator|=(const Byte_t& rhs);
+	Byte_t& operator&=(const Byte_t& rhs);
+	Byte_t& operator^=(const Byte_t& rhs);
 
 	operator int();
 	operator Word_t();
@@ -58,7 +58,7 @@ union Word_t
 	Word_t operator--(int);
 	Word_t& operator+=(const Word_t& rhs);
 	Word_t& operator-=(const Word_t& rhs);
-    Word_t operator+(const Word_t& rhs);
+	Word_t operator+(const Word_t& rhs);
 	Word_t operator-(const Word_t& rhs);
 
 	operator int();
