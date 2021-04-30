@@ -36,6 +36,8 @@ union Byte_t
 	Byte_t& operator-=(const Byte_t& rhs);
 	Byte_t operator+(const Byte_t& rhs);
 	Byte_t operator-(const Byte_t& rhs);
+	Byte_t operator/(const Byte_t& rhs);
+	Byte_t operator%(const Byte_t& rhs);
 	Byte_t& operator|=(const Byte_t& rhs);
 	Byte_t& operator&=(const Byte_t& rhs);
 	Byte_t& operator^=(const Byte_t& rhs);
