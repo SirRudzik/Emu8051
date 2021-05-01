@@ -73,8 +73,8 @@ class Core8051
         Core8051();
         virtual ~Core8051();
         void LoadHex(std::string file);
-        void ProgramRun(std::uint64_t cycles, bool step){}
-        void Cycle(){}
+        void ProgramRun(std::uint64_t cycles, bool step);
+        void Cycle();
 
     private:
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t bitAddress);

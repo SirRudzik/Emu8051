@@ -158,6 +158,15 @@ void Core8051::CalcBitP()
 	PSW.b0 = ACC.b0 ^ ACC.b1 ^ ACC.b2 ^ ACC.b3 ^ ACC.b4 ^ ACC.b5 ^ ACC.b6 ^ ACC.b7;
 }
 
+void Core8051::ProgramRun(std::uint64_t cycles, bool step)
+{
+
+}
+void Core8051::Cycle()
+{
+    InstructionDecoder[PC](this);
+    CalcBitP();
+}
 std::function<void(Core8051* pt)> Core8051::InstructionDecoder[] =
 {
     //NOP  0x00
