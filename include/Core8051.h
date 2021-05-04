@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include <fstream>
+#include <bitset>
 #include "Sfr.h"
 
 union Word_t;
@@ -41,6 +43,7 @@ union Byte_t
 	Byte_t& operator|=(const Byte_t& rhs);
 	Byte_t& operator&=(const Byte_t& rhs);
 	Byte_t& operator^=(const Byte_t& rhs);
+	friend std::ostream& operator<<(std::ostream& out, const Byte_t& b);
 
 	operator int();
 	operator Word_t();
@@ -62,6 +65,7 @@ union Word_t
 	Word_t& operator-=(const Word_t& rhs);
 	Word_t operator+(const Word_t& rhs);
 	Word_t operator-(const Word_t& rhs);
+	friend std::ostream& operator<<(std::ostream& out, const Word_t& w);
 
 	operator int();
 	operator Byte_t();
@@ -72,9 +76,10 @@ class Core8051
     public:
         Core8051();
         virtual ~Core8051();
-        void LoadHex(std::string file);
+        void LoadHex(const char* filePath);
         void ProgramRun(std::uint64_t cycles, bool step);
-        void Cycle();
+        void Test();
+
 
     private:
         std::pair<std::uint8_t, std::uint8_t> BitAddressDecoder(std::uint8_t bitAddress);
@@ -83,10 +88,12 @@ class Core8051
         void ClearBit(std::uint8_t bitAddress);
         void InverseBit(std::uint8_t bitAddress);
         void WriteBit(std::uint8_t bitAddress, bool bit);
-        void AccAdd(const Byte_t& num);
-        void AccAddC(const Byte_t& num);
-        void AccSubb(const Byte_t& num);
+        void AccAdd(Byte_t num);
+        void AccAddC(Byte_t num);
+        void AccSubb(Byte_t num);
         void CalcBitP();
+        void Cycle();
+        void PrintCore();
         Byte_t& Register(std::uint8_t r);
 
         static std::function<void(Core8051* pt)> InstructionDecoder[0x100];
@@ -94,6 +101,7 @@ class Core8051
         Byte_t ram[0x100];
         Byte_t externalRam[0x10000];
         Word_t PC;
+        std::uint64_t cycleCounter;
 
         //sfr's
         Byte_t& B;
