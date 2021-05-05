@@ -96,7 +96,7 @@ class Core8051
         void PrintCore();
         Byte_t& Register(std::uint8_t r);
 
-        static std::function<void(Core8051* pt)> InstructionDecoder[0x100];
+        static std::function<void(Core8051* pt)> InstructionDecoder[0x2][0x100];
         Byte_t code[0x10000];
         Byte_t ram[0x100];
         Byte_t externalRam[0x10000];
