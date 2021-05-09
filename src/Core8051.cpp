@@ -916,8 +916,8 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
                                 if(pt->ram[pt->code[pt->PC - 1]] != 0)
                                     pt->PC.word += pt->code[pt->PC].signedByte;} },
     //XCHD A,@Ri  0xD6
-    { [](Core8051* pt){pt->PC++; pt->ACC.n0 = pt->ram[pt->Register(0)].n0;} },
-    { [](Core8051* pt){pt->PC++; pt->ACC.n0 = pt->ram[pt->Register(1)].n0;} },
+    { [](Core8051* pt){pt->PC++; Byte_t temp = pt->ACC; pt->ACC.n0 = pt->ram[pt->Register(0)].n0; pt->ram[pt->Register(0)].n0 = temp.n0;} },
+    { [](Core8051* pt){pt->PC++; Byte_t temp = pt->ACC; pt->ACC.n0 = pt->ram[pt->Register(1)].n0; pt->ram[pt->Register(1)].n0 = temp.n0;} },
     //DJNZ Rn, code addr  0xD8
     { [](Core8051* pt){pt->PC += Byte_t{2};
                                 pt->Register(0)--;
