@@ -962,8 +962,8 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
                                 pt->PC.highByte.b0 = temp.highByte.b0;
                                 pt->PC.lowByte = temp.lowByte;} },
     //MOVX A,@Ri  0xE2
-    { [](Core8051* pt){pt->PC++; pt->ACC = pt->ram[pt->Register(0)];} },
-    { [](Core8051* pt){pt->PC++; pt->ACC = pt->ram[pt->Register(1)];} },
+    { [](Core8051* pt){pt->PC++; pt->ACC = pt->externalRam[pt->Register(0)];} },
+    { [](Core8051* pt){pt->PC++; pt->ACC = pt->externalRam[pt->Register(1)];} },
     //CLR A  0xE4
     { [](Core8051* pt){pt->PC++; pt->ACC = Byte_t{0};} },
     //MOV A,data addr  0xE5
@@ -1314,7 +1314,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     { [](Core8051* pt){std::cout << "CJNE R6,data addr,code addr";} },
     { [](Core8051* pt){std::cout << "CJNE R7,data addr,code addr";} },
     //PUSH data addr  0xC0
-    { [](Core8051* pt){std::cout << "PUSH data addr";} },
+    { [](Core8051* pt){std::cout << "PUSH " << pt->code[pt->PC + 1];} },
     //AJMP code addr  0xC1
     { [](Core8051* pt){Word_t temp{0x0600}; temp += pt->code[pt->PC + 1]; std::cout << "AJMP " << temp;} },
     //CLR bit addr  0xC2
@@ -1339,7 +1339,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     { [](Core8051* pt){std::cout << "XCH A,R6";} },
     { [](Core8051* pt){std::cout << "XCH A,R7";} },
     //POP data addr  0xD0
-    { [](Core8051* pt){std::cout << "POP";} },
+    { [](Core8051* pt){std::cout << "POP " << pt->code[pt->PC + 1];} },
     //ACALL code addr  0xD1
     { [](Core8051* pt){Word_t temp{0x0600}; temp += pt->code[pt->PC + 1]; std::cout << "ACALL " << temp;} },
     //SETB bit addr  0xD2
