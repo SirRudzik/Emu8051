@@ -76,7 +76,7 @@ class Core8051
     public:
         Core8051();
         virtual ~Core8051();
-        void LoadHex(const char* filePath);
+        void LoadBinary(const char* filePath);
         void ProgramRun(std::uint64_t cycles, bool step);
         void Test();
 

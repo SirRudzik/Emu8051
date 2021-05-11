@@ -3,7 +3,7 @@
 int main(int argc, char* argv[])
 {
     Core8051 testowy;
-    testowy.LoadHex("Test_PUSH_POP.bin");
+    testowy.LoadBinary("Test_JUMPS.bin");
     std::cin.get();
     testowy.ProgramRun(0, true);
     testowy.Test();

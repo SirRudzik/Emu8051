@@ -260,7 +260,7 @@ void Core8051::Cycle()
     cycleCounter++;
 }
 
-void Core8051::LoadHex(const char* filePath)
+void Core8051::LoadBinary(const char* filePath)
 {
     std::fstream hexFile;
     hexFile.open(filePath, std::ios::in | std::ios::binary);
@@ -593,7 +593,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     //ORL C,bit addr  0x72
     { [](Core8051* pt){pt->PC += Byte_t{2}; pt->WriteBit(PSW_7, pt->GetBit(PSW_7) || pt->GetBit(pt->code[pt->PC - 1]));} },
     //JMP @A+DPTR  0x73
-    { [](Core8051* pt){pt->PC++; pt->PC = pt->ACC + pt->DPTR;} },
+    { [](Core8051* pt){pt->PC++; pt->PC = pt->DPTR + Word_t{pt->ACC.byte};} },
     //MOV A,#data  0x74
     { [](Core8051* pt){pt->PC += Byte_t{2}; pt->ACC = pt->code[pt->PC - 1];} },
     //MOV data addr,#data  0x75
@@ -1021,7 +1021,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     //AJMP code addr  0x01
     { [](Core8051* pt){Word_t temp{0x0000}; temp += pt->code[pt->PC + 1]; std::cout << "AJMP " << temp;} },
     //LJMP code addr  0x02
-    { [](Core8051* pt){std::cout << "LJMP";} },
+    { [](Core8051* pt){std::cout << "LJMP "<< pt->code[pt->PC + 1] << pt->code[pt->PC + 2];} },
     //RR A  0x03
     { [](Core8051* pt){std::cout << "RR A";} },
     //INC A  0x04
@@ -1045,7 +1045,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     //ACALL code addr  0x11
     { [](Core8051* pt){Word_t temp{0x0000}; temp += pt->code[pt->PC + 1]; std::cout << "ACALL " << temp;} },
     //LCALL code addr  0x12
-    { [](Core8051* pt){std::cout << "LCALL code addr";} },
+    { [](Core8051* pt){std::cout << "LCALL " << pt->code[pt->PC + 1] << pt->code[pt->PC + 2];} },
     //RRC A  0x13
     { [](Core8051* pt){std::cout << "RRC A";} },
     //DEC A 0x14
