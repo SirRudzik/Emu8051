@@ -353,9 +353,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
                                 {
                                     pt->ClearBit(pt->code[pt->PC - 2]);
                                     pt->PC.word += pt->code[pt->PC - 1].signedByte;
-                                }
-                                else
-                                    pt->PC++;} },
+                                };} },
     //ACALL code addr  0x11
     { [](Core8051* pt){pt->PC += Byte_t{2};
                                 Word_t temp{0x0};
@@ -911,10 +909,10 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
                                     pt->AccAdd(Byte_t{0x60});
                                  } }, // <-----------------Check this
     //DJNZ data addr, code addr  0xD5
-    { [](Core8051* pt){pt->PC += Byte_t{2};
-                                pt->ram[pt->code[pt->PC - 1]]--;
-                                if(pt->ram[pt->code[pt->PC - 1]] != 0)
-                                    pt->PC.word += pt->code[pt->PC].signedByte;} },
+    { [](Core8051* pt){pt->PC += Byte_t{3};
+                                pt->ram[pt->code[pt->PC - 2]]--;
+                                if(pt->ram[pt->code[pt->PC - 2]] != 0)
+                                    pt->PC.word += pt->code[pt->PC-1].signedByte;} },
     //XCHD A,@Ri  0xD6
     { [](Core8051* pt){pt->PC++; Byte_t temp = pt->ACC; pt->ACC.n0 = pt->ram[pt->Register(0)].n0; pt->ram[pt->Register(0)].n0 = temp.n0;} },
     { [](Core8051* pt){pt->PC++; Byte_t temp = pt->ACC; pt->ACC.n0 = pt->ram[pt->Register(1)].n0; pt->ram[pt->Register(1)].n0 = temp.n0;} },
@@ -1041,7 +1039,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     { [](Core8051* pt){std::cout << "INC R6";} },
     { [](Core8051* pt){std::cout << "INC R7";} },
     //JBC bt addr, code addr  0x10
-    { [](Core8051* pt){std::cout << "JBC bit addr,code addr";} },
+    { [](Core8051* pt){std::cout << "JBC bit " << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
     //ACALL code addr  0x11
     { [](Core8051* pt){Word_t temp{0x0000}; temp += pt->code[pt->PC + 1]; std::cout << "ACALL " << temp;} },
     //LCALL code addr  0x12
@@ -1212,7 +1210,7 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     { [](Core8051* pt){std::cout << "MOV R6,#" << pt->code[pt->PC + 1];} },
     { [](Core8051* pt){std::cout << "MOV R7,#" << pt->code[pt->PC + 1];} },
     //SJMP code addr  0x80
-    { [](Core8051* pt){std::cout << "SJMP code addr";} },
+    { [](Core8051* pt){std::cout << "SJMP "<< pt->code[pt->PC + 1];} },
     //AJMP code addr  0x81
     { [](Core8051* pt){Word_t temp{0x0400}; temp += pt->code[pt->PC + 1]; std::cout << "AJMP " << temp;} },
     //ANL C,bit addr  0x82
@@ -1298,21 +1296,21 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     //CPL C  0xB3
     { [](Core8051* pt){std::cout << "CPL C";} },
     //CJNE A,#data,code addr  0xB4
-    { [](Core8051* pt){std::cout << "CJNE A,#data,code addr";} },
+    { [](Core8051* pt){std::cout << "CJNE A,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
     //CJNE A,data addr,code addr  0xB5
-    { [](Core8051* pt){std::cout << "CJNE A,data addr,code addr";} },
+    { [](Core8051* pt){std::cout << "CJNE A," << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
     //CJNE @Ri,#data,code addr  0xB6
-    { [](Core8051* pt){std::cout << "CJNE @R0,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE @R1,data addr,code addr";} },
+    { [](Core8051* pt){std::cout << "CJNE @R0,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE @R1,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
     //CJNE Rn,#data,code addr  0xB8
-    { [](Core8051* pt){std::cout << "CJNE R0,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R1,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R2,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R3,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R4,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R5,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R6,data addr,code addr";} },
-    { [](Core8051* pt){std::cout << "CJNE R7,data addr,code addr";} },
+    { [](Core8051* pt){std::cout << "CJNE R0,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R1,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R2,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R3,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R4,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R5,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R6,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
+    { [](Core8051* pt){std::cout << "CJNE R7,#" << pt->code[pt->PC + 1] << ',' << pt->code[pt->PC + 2];} },
     //PUSH data addr  0xC0
     { [](Core8051* pt){std::cout << "PUSH " << pt->code[pt->PC + 1];} },
     //AJMP code addr  0xC1
@@ -1355,14 +1353,14 @@ std::function<void(Core8051* pt)> Core8051::InstructionDecoder[0x2][0x100] =
     { [](Core8051* pt){std::cout << "XCHD A,@R0";} },
     { [](Core8051* pt){std::cout << "XCHD A,@R1";} },
     //DJNZ Rn, rel  0xD8
-    { [](Core8051* pt){std::cout << "DJNZ R0,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R1,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R2,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R3,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R4,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R5,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R6,code addr";} },
-    { [](Core8051* pt){std::cout << "DJNZ R7,code addr";} },
+    { [](Core8051* pt){std::cout << "DJNZ R0," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R1," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R2," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R3," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R4," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R5," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R6," << pt->code[pt->PC + 1];} },
+    { [](Core8051* pt){std::cout << "DJNZ R7," << pt->code[pt->PC + 1];} },
     //MOVX A,@DPTR	 0xE0
     { [](Core8051* pt){std::cout << "MOVX A,@DPTR";} },
     //AJMP code addr  0xE1
