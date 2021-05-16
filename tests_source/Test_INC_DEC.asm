@@ -1,0 +1,26 @@
+mov R0,#10
+mov R1,#20
+inc A
+inc 30
+inc @R0
+inc @R1
+inc R0
+inc R1
+inc R2
+inc R3
+inc R4
+inc R5
+inc R6
+inc R7
+
+dec R7
+dec R6
+dec R5
+dec R4
+dec R3
+dec R2
+dec R1
+dec R0
+dec @R1
+dec @R0
+dec A

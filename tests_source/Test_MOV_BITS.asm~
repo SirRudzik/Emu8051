@@ -1,0 +1,4 @@
+setb c
+mov P0.0,c
+clr c
+mov c,P0.0
