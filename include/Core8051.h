@@ -4,6 +4,7 @@
 #include <functional>
 #include <fstream>
 #include <bitset>
+#include <array>
 #include "Sfr.h"
 
 union Word_t;
@@ -71,12 +72,15 @@ union Word_t
 	operator Byte_t();
 };
 
+std::uint8_t CharToUint(const char& a);
+
 class Core8051
 {
     public:
         Core8051();
         virtual ~Core8051();
         void LoadBinary(const char* filePath);
+        void LoadHex(const char* filePath);
         void ProgramRun(std::uint64_t cycles, bool step);
         void Test();
 
@@ -127,3 +131,4 @@ class Core8051
         Byte_t& P0;
         Word_t& DPTR;
 };
+

@@ -33,6 +33,16 @@ std::ostream& operator<<(std::ostream& out, const Word_t& w){std::cout << w.high
 Word_t::operator int(){return word;}
 Word_t::operator Byte_t(){return lowByte;}
 
+std::uint8_t CharToUint(const char& a)
+{
+    std::uint8_t temp = a;
+    if(a > 0x2F && a < 0x3A)
+        return temp -= 0x30;
+    if(a > 0x40 && a < 0x47)
+        return temp -= 0x37;
+    return 0;
+}
+
 //Core8051 methods  definitions
 
 Core8051::Core8051() :
@@ -262,12 +272,50 @@ void Core8051::Cycle()
 
 void Core8051::LoadBinary(const char* filePath)
 {
+    std::fstream binFile;
+    binFile.open(filePath, std::ios::in | std::ios::binary);
+    if(binFile.good())
+    {
+        std::cout << "bin file open success" << std::endl;
+        binFile.read(reinterpret_cast<char*>(code), 0x10000 * sizeof(Byte_t));
+        binFile.close();
+    }
+    else
+        std::cout << "file not open" << std::endl;
+}
+
+void Core8051::LoadHex(const char* filePath)
+{
     std::fstream hexFile;
-    hexFile.open(filePath, std::ios::in | std::ios::binary);
+    hexFile.open(filePath, std::ios::in);
     if(hexFile.good())
     {
-        std::cout << "file open success" << std::endl;
-        hexFile.read(reinterpret_cast<char*>(code), 0x10000 * sizeof(Byte_t));
+        std::cout << "hex file open success" << std::endl;
+        std::array<char, 64> temp;
+        Word_t addressTemp;
+        Byte_t dataSize;
+        while(!hexFile.eof())
+        {
+            temp.fill(static_cast<char>(0));
+            hexFile.getline(temp.data(), 64);
+            for(int i = 0; i < 64; i++)
+            {
+                if(CharToUint(temp[8]) == 1)
+                    break;
+                dataSize.n1 = CharToUint(temp[1]);
+                dataSize.n1 = CharToUint(temp[2]);
+                addressTemp.highByte.n1 = CharToUint(temp[3]);
+                addressTemp.highByte.n0 = CharToUint(temp[4]);
+                addressTemp.lowByte.n1 = CharToUint(temp[5]);
+                addressTemp.lowByte.n0 = CharToUint(temp[6]);
+                for(std::uint8_t j = 0; j < dataSize.byte; j++)
+                {
+                    code[addressTemp + j].n1 = CharToUint(temp[9 + (j*2)]);
+                    code[addressTemp + j].n0 = CharToUint(temp[9 + (j*2) + 1]);
+                }
+            }
+            std::cout << std::endl;
+        }
         hexFile.close();
     }
     else
